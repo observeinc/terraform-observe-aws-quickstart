@@ -1,0 +1,11 @@
+name: Publish prerelease
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish:
+    uses: observeinc/.github/.github/workflows/terraform-observe_prerelease.yaml@main
+    secrets: inherit

@@ -1,0 +1,27 @@
+name: CI Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci-tests:
+    uses: observeinc/.github/.github/workflows/terraform-observe_scheduler.yaml@main
+    secrets: inherit
+    with:
+      # you can opt out of ci-tests scheduled by adding a list of "jobs" ids for the 
+      # tests that you want to skip, like so...
+      # skip: '{"jobs": ["conventional-commits", "single-commit"]}'
+      skip: '{}'
+
+  pre-commits:
+    uses: observeinc/.github/.github/workflows/terraform-observe_pre-commit.yaml@main
+    secrets: inherit
+    with:
+      # When upgrading TFLint, you may also need to upgrade plugin versions in the
+      #     configuration, if the new TFLint version upgrades the plugin protocol.
+      # These breaking upgrades will occur on some (not all) 0.x version increments.
+      tflint-version: v0.45.0
