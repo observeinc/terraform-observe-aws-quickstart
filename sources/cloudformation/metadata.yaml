@@ -1,0 +1,5 @@
+name: cloudformation
+description: Onboard AWS region using CloudFormation
+kind: token
+requiredvariables:
+- datastream

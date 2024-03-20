@@ -10,16 +10,9 @@ variable "name_format" {
     Format string to use for dataset names. Override to introduce a prefix or
     suffix.
   EOF
-  default     = "%s"
+  default     = "AWS-Quickstart/%s"
 }
 
-variable "freshness_overrides" {
-  type        = map(string)
-  description = "Freshness overrides by dataset. If absent, fall back to freshness_default"
-  default     = {}
-}
-
-/*
 variable "datastream" {
   type        = object({ dataset = string })
   description = <<-EOF
@@ -44,4 +37,4 @@ variable "max_time_diff_duration" {
   description = "Maximum time difference for processing time window."
   default     = "4h"
 }
-*/
+

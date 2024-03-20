@@ -1,0 +1,6 @@
+name: AWS Quickstart
+description: Track all of your resources across AWS services such as EC2, EKS, Lambda Functions, RDS, and more.
+defaultfolder: aws-quickstart
+defaultdatastream: AWS
+iconurl: https://assets.observeinc.com/icons/apps/terraform-observe-aws/aws-icon.png
+sortBy: position
