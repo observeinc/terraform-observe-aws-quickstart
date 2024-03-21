@@ -1,0 +1,75 @@
+# Next steps
+
+An Observe Filedrop access point has been successfully provisioned!
+
+You must now provision the necessary infrastructure in your AWS account.
+
+## Configuration
+
+### Using AWS Console
+
+Use this [quick-create link](${quick_create_link}) to install a pre-configured CloudFormation stack in the AWS Console.
+
+### Using AWS CLI
+
+Run the following command to install the CloudFormation stack using the AWS command line interface:
+
+```
+aws cloudformation create-stack \
+    --stack-name ${name} \
+    --region ${aws_region} \
+    --template-url ${template_url} \
+    --parameters \
+        ${indent(8, join("\n", [for k, v in cloudformation_parameters: "ParameterKey=${k},ParameterValue=\"${v}\" \\"]))}
+    --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
+```
+
+### Using Terraform
+
+You can install our collection module using Terraform:
+
+```
+module "observe" {
+  source  = "observeinc/collection/aws//modules/stack"
+  version = ">= 2.10"
+
+  name = "${name}"
+
+  destination = {
+%{ if can(destination.uri) ~}
+    uri = "${destination.uri}"
+%{ else ~}
+    arn    = "${destination.arn}"
+    bucket = "${destination.bucket}"
+    prefix = "${destination.prefix}"
+%{ endif ~}
+  }
+
+  ## Grant forwarder access to read from pre-existing S3 buckets
+  # source_bucket_names = ["*"]
+
+%{ if !enable_config }  /*%{ endif ~}
+  # enable AWS Config collection
+  config = {
+    include_resource_types = ["*"]
+    exclude_resource_types = []
+  }
+%{ if !enable_config }  */%{ endif }
+
+%{ if !enable_cloudwatch_logs }  /*%{ endif }
+  # enable AWS CloudWatch log collection
+  logwriter = {
+    log_group_name_patterns = ["*"]
+    exclude_log_group_name_patterns = []
+  }
+%{ if !enable_cloudwatch_logs }  */%{ endif }
+
+%{ if !enable_cloudwatch_metricstream }  /*%{ endif }
+  metricstream = {
+    # enable AWS CloudWatch Metric stream collection
+    # Optionally provide inclusion or exclusion filters to reduce collection
+    # include_filters = [ { namespace    = "AWS/RDS", metric_names = [] } ]
+  }
+%{ if !enable_cloudwatch_metricstream }  */%{ endif }
+}
+```
