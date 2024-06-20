@@ -12,17 +12,8 @@ resource "observe_dataset" "metrics" {
   stage {
     input    = "datastream"
     pipeline = <<-EOF
-        make_col
-          timestamp:timestamp_ms(int64(FIELDS.timestamp)),
-          data:string(FIELDS.data),
-          continue:bool(FIELDS.continue),
-          requestId:string(FIELDS.requestId),
-          protocolVersion:string(EXTRA['X-Amz-Firehose-Protocol-Version']),
-          sourceArn:string(EXTRA['X-Amz-Firehose-Source-Arn'])
-
-        make_col data:split(data, "\n")
-        flatten_all data
-        make_col data:parse_json(string(@."_c_data_value"))
+        filter (OBSERVATION_KIND="http" or OBSERVATION_KIND="filedrop") and string(EXTRA["content-type"]) = "application/x-aws-cloudwatchmetrics"
+        make_col data:FIELDS
 
         filter path_exists(data, "metric_stream_name")
         make_col timestamp:timestamp_ms(int64(data.timestamp))
@@ -49,16 +40,20 @@ resource "observe_dataset" "metrics" {
           value:float64(_c_ob_value),
           unit:if(_c_ob_path="count", string_null(), unit),
           service:case(
+            namespace="NetworkELB", "ElasticLoadBalancingV2",
             namespace="AWS/EBS", "EC2",
             namespace="AWS/Firehose", "KinesisFirehose",
             namespace="AWS/ApplicationELB", "ElasticLoadBalancingV2",
             namespace="AWS/EC2" and path_exists(dimensions, "AutoScalingGroupName"), "AutoScaling",
             namespace="AWS/NATGateway", "EC2",
+            namespace="AWS/EC2CapacityReservations", "EC2",
             namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiId"), "ApiGatewayV2",
             namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiName"), "ApiGateway",
+            namespace="AWS/PrivateLinkEndpoints" and (path_exists(dimensions, "VPC Id") or path_exists(dimensions, "Subnet Id")), "EC2",
             starts_with(namespace, "AWS/"), split_part(namespace, "/", 2),
             starts_with(namespace, "ECS/ContainerInsights"), "ECS",
-            starts_with(namespace, "ContainerInsights/"), "EKS"
+            starts_with(namespace, "ContainerInsights/"), "EKS",
+            starts_with(namespace, "/aws/sagemaker/"), "SageMaker"
           )
 
         // base
@@ -70,6 +65,7 @@ resource "observe_dataset" "metrics" {
           namespace="AWS/ApplicationELB" and path_exists(dimensions, "LoadBalancer"), concat_strings("arn:aws:elasticloadbalancing:", region, ":", account_id, ":loadbalancer/", string(dimensions["LoadBalancer"])),
           namespace="AWS/Events" and path_exists(dimensions, "RuleName"), string(dimensions["RuleName"]),
           namespace="AWS/EC2" and path_exists(dimensions, "AutoScalingGroupName"), dimensions["AutoScalingGroupName"],
+          namespace="AWS/EC2CapacityReservations", string(dimensions["CapacityReservationId"]),
           namespace="AWS/NatGateway", dimensions["NatGatewayId"],
           namespace="AWS/Cloudwatch" and path_exists(dimensions, "MetricStreamName"), string(dimensions["MetricStreamName"]),
           namespace="AWS/ECS", coalesce(dimensions["ServiceName"], dimensions["DiscoveryName"], dimensions["ClusterName"]),
@@ -83,24 +79,54 @@ resource "observe_dataset" "metrics" {
           namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiName") and path_exists(dimensions, "Stage"), concat_strings("arn:aws:apigateway:", region, "::/restapis/", string(dimensions["ApiName"]), "/stages/", string(dimensions["Stage"])),
           namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiId"), concat_strings("arn:aws:apigateway:", region, "::/restapis/", string(dimensions["ApiName"])),
           //ECS ContainerInsights
-          namespace="ECS/ContainerInsights", coalesce(dimensions["TaskDefinitionFamily"], dimensions["ServiceName"], dimensions["ClusterName"]),
+          namespace="ECS/ContainerInsights", string(coalesce(dimensions["TaskDefinitionFamily"], dimensions["ServiceName"], dimensions["ClusterName"])),
+          namespace="AWS/PrivateLinkEndpoints" and path_exists(dimensions, "VPC Id"), string(dimensions["VPC Id"]),
+          namespace="AWS/PrivateLinkEndpoints" and path_exists(dimensions, "Subnet Id"), string(dimensions["Subnet Id"]),
+          namespace="AWS/SQS" and path_exists(dimensions, "QueueName"), concat_strings("https://sqs.", region, ".amazonaws.com/", account_id, "/", string(dimensions["QueueName"])),
+          namespace="AWS/SNS" and path_exists(dimensions, "TopicName"), string(dimensions["TopicName"]),
+          namespace="AWS/S3" and path_exists(dimensions, "BucketName"), string(dimensions["BucketName"]),
+          namespace="AWS/ECR" and path_exists(dimensions, "RepositoryName"), string(dimensions["RepositoryName"]),
+          namespace="AWS/CloudWatch/MetricStreams" and path_exists(dimensions, "MetricStreamName"), string(dimensions["MetricStreamName"]),
+          namespace="AWS/DynamoDB" and path_exists(dimensions, "TableName"), string(dimensions["TableName"]),
+          service="SageMaker" and path_exists(dimensions, "EndpointName"), string(dimensions["EndpointName"]),
+          namespace="NetworkELB" and path_exists(dimensions, "LoadBalancer"), concat_strings("arn:aws:elasticloadbalancing:", region, ":", account_id, ":loadbalancer/", string(dimensions["LoadBalancer"])),
           true, resourceId
         )
 
         make_col account_id:case(service="ApiGatewayV2", "", true, account_id)
 
-        make_col 
-          unit:case(
-            unit = "s", "Seconds",
-            unit = "ms", "Milliseconds",
-            unit = "{Count}", "Count",
-            unit = "{Count}/s", "Count/Second",
-            unit = "1", "None",
-            unit = "By", "Bytes",
-            unit = "By/s", "Bytes/Second",
-            unit = "%", "Percent",
-            unit = "GBy", "Gigabytes",
-            unit = "MBy", "Megabytes"),
+        make_col
+          // https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html
+          unit: case(
+            unit = "Seconds", "s",
+            unit = "Microseconds", "us",
+            unit = "Milliseconds", "ms",
+            unit = "Bytes", "By",
+            unit = "Kilobytes", "kB",
+            unit = "Megabytes", "MB",
+            unit = "Gigabytes", "GB",
+            unit = "Terabytes", "TB",
+            unit = "Bits", "b",
+            unit = "Kilobits", "kb",
+            unit = "Megabits", "mb",
+            unit = "Gigabits", "gb",
+            unit = "Terabits", "tb",
+            unit = "Percent", "percent(0-100)",
+            unit = "Count", string_null(),
+            unit = "Bytes/Second", "B/s",
+            unit = "Kilobytes/Second", "kB",
+            unit = "Megabytes/Second", "MB",
+            unit = "Gigabytes/Second", "GB",
+            unit = "Terabytes/Second", "TB/s",
+            unit = "Bits/Second", "b/s",
+            unit = "Kilobits/Second", "kb/s",
+            unit = "Megabits/Second", "mb/s",
+            unit = "Gigabits/Second", "gb/s",
+            unit = "Terabits/Second", "tb/s",
+            unit = "Count/Second", string_null(),
+            unit = "None", string_null(),
+            true, unit
+          ),
           metricType:"gauge"
 
         pick_col
@@ -115,12 +141,7 @@ resource "observe_dataset" "metrics" {
           unit,
           dimensions
 
-        interface "metric", metric:metric, value:value, metricType:metricType
-    EOF
-  }
-
-  stage {
-    pipeline = <<-EOF
+        interface "metric", metric:metric, value:value, metricType:metricType, metricUnit:unit
     EOF
   }
 }

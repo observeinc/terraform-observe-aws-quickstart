@@ -1,6 +1,7 @@
 # Observe example module
 
-This is an example terraform module. Feel free to copy.
+This terraform module instantiates data from AWS as
+datasets and dashboards in Observe. 
 
 ## Usage
 
@@ -16,7 +17,8 @@ module "google_quickstart" {
   workspace = data.observe_workspace.default
 }
 ```
-  
+
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -39,6 +41,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| observe_dashboard.home | resource |
 | observe_dataset.logs | resource |
 | observe_dataset.metrics | resource |
 | observe_dataset.resources | resource |
@@ -54,7 +57,7 @@ No modules.
 | <a name="input_max_expiry_duration"></a> [max\_expiry\_duration](#input\_max\_expiry\_duration) | Maximum expiry time for resources. | `string` | `"4h"` | no |
 | <a name="input_max_time_diff_duration"></a> [max\_time\_diff\_duration](#input\_max\_time\_diff\_duration) | Maximum time difference for processing time window. | `string` | `"4h"` | no |
 | <a name="input_name_format"></a> [name\_format](#input\_name\_format) | Format string to use for dataset names. Override to introduce a prefix or<br>suffix. | `string` | `"AWS-Quickstart/%s"` | no |
-| <a name="input_workspace"></a> [workspace](#input\_workspace) | Workspace to apply module to. | `object({ oid = string })` | n/a | yes |
+| <a name="input_workspace"></a> [workspace](#input\_workspace) | Workspace to apply module to. | `object({ oid = string, id = string })` | n/a | yes |
 
 ## Outputs
 

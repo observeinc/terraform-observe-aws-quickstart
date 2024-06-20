@@ -1,5 +1,0 @@
-name: terraform
-description: Onboard AWS region using Terraform
-kind: token
-requiredvariables:
-- datastream

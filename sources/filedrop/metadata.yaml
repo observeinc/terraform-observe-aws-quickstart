@@ -1,0 +1,5 @@
+name: filedrop
+description: Collect metrics, logs and resources for AWS region using Filedrop
+kind: filedrop
+requiredvariables:
+- datastream
