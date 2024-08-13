@@ -12,7 +12,7 @@ resource "observe_dataset" "metrics" {
   stage {
     input    = "datastream"
     pipeline = <<-EOF
-        filter (OBSERVATION_KIND="http" or OBSERVATION_KIND="filedrop") and string(EXTRA["content-type"]) = "application/x-aws-cloudwatchmetrics"
+        filter in(OBSERVATION_KIND, "http", "filedrop", "cloudwatchmetrics") and string(EXTRA["content-type"]) = "application/x-aws-cloudwatchmetrics"
         make_col data:FIELDS
 
         filter path_exists(data, "metric_stream_name")
