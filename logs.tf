@@ -47,7 +47,6 @@ resource "observe_dataset" "logs" {
           starts_with(logGroup, "/aws/eks/"), get_regex(logGroup, /^\/aws\/eks\/([^\/]*)\/.*/, 1),
           starts_with(logGroup, "/aws/ecs/containerinsights/"), get_regex(logGroup, /^\/aws\/ecs\/containerinsights\/([^\/]*)\/.*/, 1),
           starts_with(logGroup, "/aws/ecs/"), get_regex(logGroup, /^\/aws\/ecs\/([^\/]*)\/.*/, 1),
-          starts_with(logGroup, "/aws/lambda/"), get_regex(logGroup, /^\/aws\/lambda\/([^\/]*).*/, 1),
           starts_with(logGroup, "/aws/rds/instance/"), get_regex(logGroup, /^\/aws\/rds\/instance\/([^\/]*).*/, 1),
           starts_with(logGroup, "/aws/rds/cluster/"), get_regex(logGroup,  /^\/aws\/rds\/cluster\/([^\/]*).*/, 1),
           logGroup="RDSOSMetrics", string(message.jsonPayload.instanceID)

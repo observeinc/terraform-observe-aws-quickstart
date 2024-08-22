@@ -71,7 +71,6 @@ resource "observe_dataset" "metrics" {
           namespace="AWS/ECS", coalesce(dimensions["ServiceName"], dimensions["DiscoveryName"], dimensions["ClusterName"]),
           namespace="AWS/Kinesis", string(dimensions["StreamName"]),
           namespace="AWS/Firehose", string(dimensions["DeliveryStreamName"]),
-          namespace="AWS/Lambda", string(dimensions["FunctionName"]),
           //ApiGateway V2
           namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiId") and path_exists(dimensions, "Stage"), concat_strings("arn:aws:apigateway:", region, "::/apis/", string(dimensions["ApiId"]), "/stages/", string(dimensions["Stage"])), 
           namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiId"), concat_strings("arn:aws:apigateway:", region, "::/apis/", string(dimensions["ApiId"])),
