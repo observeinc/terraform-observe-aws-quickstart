@@ -1,0 +1,60 @@
+An Observe Filedrop access point has been successfully provisioned!
+
+You must now provision the necessary infrastructure in your AWS account.
+
+## Provision forwarder
+
+### Using AWS Console
+
+Use this [quick-create link](${quick_create_link}) to install a pre-configured CloudFormation stack in the AWS Console.
+
+### Using AWS CLI
+
+Run the following command to install the CloudFormation stack using the AWS command line interface:
+
+```
+aws cloudformation create-stack \
+    --stack-name ${name} \
+    --region ${aws_region} \
+    --template-url ${template_url} \
+    --parameters \
+        ${indent(8, join("\n", [for k, v in cloudformation_parameters: "ParameterKey=${k},ParameterValue=\"${v}\" \\"]))}
+    --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
+aws cloudformation wait stack-create-complete --stack-name ${name}
+```
+
+### Using Terraform
+
+You can install our collection module using Terraform:
+
+```
+module "observe" {
+  source  = "observeinc/collection/aws//modules/forwarder"
+  version = ">= 2.10"
+
+  name = "${name}"
+
+  destination = {
+    arn    = "${destination.arn}"
+    bucket = "${destination.bucket}"
+    prefix = "${destination.prefix}"
+  }
+
+%{ if length(source_bucket_names) > 0 ~}
+  source_bucket_names = [ "${ join("\", \"", source_bucket_names) }" ]
+%{ endif ~}
+  # append any KMS keys required for decrypting S3 content
+  # source_kms_key_arns = []
+}
+```
+
+## Subscribe S3 buckets
+
+Once the forwarder is provisioned, you must configure your S3 bucket
+notifications in order to initiate a file copy into Observe.
+
+In the AWS S3 console you can either:
+
+- go to S3 bucket properties and edit the `EventBridge` section to allow sending notifications
+for all bucket events, **or**
+- create an event notification for `All object create events` and set the `${name}` lambda function as the target.
