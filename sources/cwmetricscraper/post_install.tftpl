@@ -1,0 +1,40 @@
+An Observe Poller point has been successfully provisioned!
+
+You must now provision the necessary infrastructure in your AWS account.
+
+## Provision forwarder
+
+### Using AWS Console
+
+Use this [quick-create link](${quick_create_link}) to install a pre-configured CloudFormation stack in the AWS Console.
+
+### Using AWS CLI
+
+Run the following command to install the CloudFormation stack using the AWS command line interface:
+
+```
+aws cloudformation create-stack \
+    --stack-name ${name} \
+    --template-url ${template_url} \
+    --parameters \
+        ${indent(8, join("\n", [for k, v in cloudformation_parameters: "'ParameterKey=${k},ParameterValue=\"${v}\"' \\"]))}
+    --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
+aws cloudformation wait stack-create-complete --stack-name ${name}
+```
+
+### Using Terraform
+
+You can install our collection module using Terraform:
+
+```
+module "observe" {
+  source  = "observeinc/collection/aws//modules/externalrole"
+  version = ">= 2.25"
+
+  name = "${name}"
+
+  observe_aws_account_id = "${observe_aws_account_id}"
+  datastream_ids         = ${datastream_ids}
+  allowed_actions        = ${allowed_actions}
+}
+```

@@ -1,0 +1,5 @@
+name: metricspull
+description: Pull CloudWatch Metrics from AWS
+kind: poller
+requiredvariables:
+- datastream
