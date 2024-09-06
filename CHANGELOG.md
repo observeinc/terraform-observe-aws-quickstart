@@ -1,3 +1,12 @@
+# [0.3.0](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.2.0...v0.3.0) (2024-09-06)
+
+
+### Features
+
+* add support for s3 forwarder ([75b13f1](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/75b13f1f4c38a7304de71b7f0c1fc393f6abc7ca))
+
+
+
 # [0.2.0](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.1.0...v0.2.0) (2024-09-06)
 
 
