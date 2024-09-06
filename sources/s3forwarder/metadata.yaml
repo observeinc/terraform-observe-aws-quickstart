@@ -1,0 +1,5 @@
+name: filedrop
+description: Forward data from S3
+kind: filedrop
+requiredvariables:
+- datastream
