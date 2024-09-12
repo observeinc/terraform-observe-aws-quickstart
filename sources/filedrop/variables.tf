@@ -70,7 +70,7 @@ variable "release_version" {
 variable "enable_filedrop" {
   type        = bool
   description = <<-EOF
-    Use a Filedrop backend. This feature is still experimental. Defaults (false) to HTTP based ingest.
+    Use a Filedrop backend. This feature is in public preview. Defaults (false) to HTTP based ingest.
   EOF
   default     = false
 }
