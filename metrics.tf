@@ -111,7 +111,7 @@ resource "observe_dataset" "metrics" {
             unit = "Megabits", "mb",
             unit = "Gigabits", "gb",
             unit = "Terabits", "tb",
-            unit = "Percent", "percent(0-100)",
+            unit = "Percent", "percent (0-100)",
             unit = "Count", string_null(),
             unit = "Bytes/Second", "B/s",
             unit = "Kilobytes/Second", "kB",
