@@ -15,7 +15,6 @@ resource "observe_dataset" "metrics" {
         filter in(OBSERVATION_KIND, "http", "filedrop", "cloudwatchmetrics") and string(EXTRA["content-type"]) = "application/x-aws-cloudwatchmetrics"
         make_col data:FIELDS
 
-        filter path_exists(data, "metric_stream_name")
         make_col timestamp:timestamp_ms(int64(data.timestamp))
         set_valid_from options(max_time_diff:4h), timestamp
         make_col
