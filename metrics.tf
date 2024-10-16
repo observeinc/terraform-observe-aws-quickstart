@@ -11,13 +11,38 @@ resource "observe_dataset" "metrics" {
 
   stage {
     input    = "datastream"
+    alias    = "from_metricspoller_lambda"
+    pipeline = <<-EOF
+      filter OBSERVATION_KIND = "http" and string(EXTRA.path) = "/aws/cloudwatch/metrics"
+      make_col
+        timestamp:parse_isotime(string(FIELDS.Time)),
+        invokedFunctionArn:string(EXTRA.invokedFunctionArn)
+      extract_regex invokedFunctionArn, /arn:aws:lambda:(?P<region>[^:]+):(?P<account_id>[^:]+)/
+      set_valid_from options(max_time_diff:${var.max_time_diff_duration}), timestamp
+      pick_col
+        timestamp,
+        account_id,
+        region,
+        namespace:string(FIELDS.Namespace),
+        metric_name:string(FIELDS.MetricName),
+        dimensions:pivot_array(array(FIELDS.Dimensions), "Name", "Value"),
+        ob:make_object(
+          count:float64(FIELDS.Value.Count),
+          max:float64(FIELDS.Value.Max),
+          min:float64(FIELDS.Value.Min),
+          sum:float64(FIELDS.Value.Sum)
+        )
+    EOF
+  }
+
+  stage {
+    input    = "datastream"
     pipeline = <<-EOF
         filter in(OBSERVATION_KIND, "http", "filedrop", "cloudwatchmetrics") and string(EXTRA["content-type"]) = "application/x-aws-cloudwatchmetrics"
         make_col data:FIELDS
 
-        filter path_exists(data, "metric_stream_name")
         make_col timestamp:timestamp_ms(int64(data.timestamp))
-        set_valid_from options(max_time_diff:4h), timestamp
+        set_valid_from options(max_time_diff:${var.max_time_diff_duration}), timestamp
         make_col
           account_id:string(data.account_id),
           metric_stream_name:string(data.metric_stream_name),
@@ -32,7 +57,8 @@ resource "observe_dataset" "metrics" {
             min:float64(data.value.min),
             sum:float64(data.value.sum)
           )
-
+        
+        union @from_metricspoller_lambda
         flatten_single ob
 
         make_col
