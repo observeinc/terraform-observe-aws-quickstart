@@ -1,5 +1,5 @@
 locals {
-  name = "${var.name_prefix}${var.aws_region}"
+  name = replace(var.name, "{region}", var.aws_region)
 
   enable_filedrop = var.enable_filedrop
 
@@ -27,7 +27,7 @@ locals {
     DestinationUri        = local.enable_filedrop ? "s3://${local.destination.bucket}/${local.destination.prefix}" : local.destination.uri
     IncludeResourceTypes  = var.enable_config ? "*" : ""
     LogGroupNamePrefixes  = var.enable_cloudwatch_logs ? "*" : ""
-    MetricStreamFilterURI = var.enable_cloudwatch_metricstream ? "s3://observeinc/cloudwatchmetrics/filters/recommended.yaml" : ""
+    MetricStreamFilterUri = var.enable_cloudwatch_metricstream ? "s3://observeinc-${var.aws_region}/aws-sam-apps/${var.release_version}/cloudwatchmetrics/filters/recommended.yaml" : ""
   }
 
   quick_create_link = join("", [for line in split("\n", <<-EOF
