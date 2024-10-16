@@ -55,10 +55,14 @@ variable "datastream" {
   EOF
 }
 
-variable "name_prefix" {
+variable "name" {
   type        = string
-  description = "Name prefix to use when naming resources."
-  default     = "observe-collection-"
+  description = <<-EOF
+    Name for terraform module or cloudformation stack. This will determine
+    the name of the IAM role and other provisioned resources. The name must not
+    be modified once a data source has been provisioned.
+  EOF
+  default     = "observe-collection"
 }
 
 variable "release_version" {
@@ -70,7 +74,7 @@ variable "release_version" {
 variable "enable_filedrop" {
   type        = bool
   description = <<-EOF
-    Use a Filedrop backend. This feature is still experimental. Defaults (false) to HTTP based ingest.
+    Use a Filedrop backend. This feature is in public preview. Defaults (false) to HTTP based ingest.
   EOF
   default     = false
 }
