@@ -1,3 +1,12 @@
+## [0.3.1](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.3.0...v0.3.1) (2024-10-16)
+
+
+### Bug Fixes
+
+* **metrics:** correctly account for poller sources ([af5cb45](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/af5cb45461dd5937030c85e62d9bdbf1955235d9))
+
+
+
 # [0.3.0](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.2.0...v0.3.0) (2024-09-06)
 
 
