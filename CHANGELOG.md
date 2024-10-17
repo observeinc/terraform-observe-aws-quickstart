@@ -1,3 +1,13 @@
+## [0.3.2](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.3.1...v0.3.2) (2024-10-17)
+
+
+### Bug Fixes
+
+* **connections:** streamline filedrop and s3 forwarder sources ([636e4c7](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/636e4c759a3a75d63150899cfe904c2476369141))
+* **resources:** extract account ID and region for S3 buckets ([e3976db](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/e3976dbca5fd45fd8a229ce62247d361ceaaa5e5))
+
+
+
 ## [0.3.1](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.3.0...v0.3.1) (2024-10-16)
 
 
