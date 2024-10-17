@@ -37,6 +37,9 @@ resource "observe_dataset" "resources" {
         filter Service!="Config" and ServiceSubType!="ResourceCompliance"
 
         extract_regex ARN, /^arn:(?P<Partition>[^:]*):(?P<ServiceIgnore>[^:]*):(?P<Region>[^:]*):(?P<AccountID>[^:]*):(?P<Resource>.*)$/
+        make_col
+          AccountID:if(AccountID="" or is_null(AccountID), string(FIELDS.awsAccountId), AccountID),
+          Region:if(Region="" or is_null(Region), string(FIELDS.awsRegion), Region)
         make_col Name:coalesce(get_regex(ARN, /arn:(aws|aws-us-gov|aws-cn):.*?:(\d{12}):(.*)$/, 3), Resource)
         make_col ID:coalesce(string(FIELDS.resourceId), string(Configuration.Id), string(Configuration.id))
     EOF
@@ -70,6 +73,9 @@ resource "observe_dataset" "resources" {
         filter Service!="Config" and ServiceSubType!="ResourceCompliance"
 
         extract_regex ARN, /^arn:(?P<Partition>[^:]*):(?P<ServiceIgnore>[^:]*):(?P<Region>[^:]*):(?P<AccountID>[^:]*):(?P<Resource>.*)$/
+        make_col
+          AccountID:if(AccountID="" or is_null(AccountID), string(FIELDS.awsAccountId), AccountID),
+          Region:if(Region="" or is_null(Region), string(FIELDS.awsRegion), Region)
         make_col Name:coalesce(get_regex(ARN, /arn:(aws|aws-us-gov|aws-cn):.*?:(\d{12}):(.*)$/, 3), Resource)
         make_col ID:coalesce(string(FIELDS.resourceId), string(Configuration.Id), string(Configuration.id))
     EOF
