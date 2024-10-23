@@ -62,7 +62,7 @@ variable "name" {
     the name of the IAM role and other provisioned resources. The name must not
     be modified once a data source has been provisioned.
   EOF
-  default     = "observe-collection"
+  default     = "observe-collection-{region}"
 }
 
 variable "release_version" {
