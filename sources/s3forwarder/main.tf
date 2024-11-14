@@ -6,6 +6,21 @@ locals {
   destination      = observe_filedrop.aws_filedrop.endpoint[0].s3[0]
   access_point_arn = observe_filedrop.aws_filedrop.endpoint[0].s3[0].arn
 
+  # the frontend gets the keys, which are the cluster names from 
+  # ops/kubernetes/clusters/{CLUSTER_NAME}/vars/shared-domain.env
+  cluster_region_map = {
+    eng         = "us-west-2"
+    o2          = "us-west-2"
+    prod        = "us-west-2"
+    sandbox     = "us-west-2"
+    staging     = "us-west-2"
+    prod-cap1-2 = "us-west-2"
+    prod-ap-1   = "ap-northeast-1"
+    prod-cap1   = "us-east-1"
+    prod-eu-1   = "eu-central-1"
+    prod-cba-1  = "ap-southeast-2"
+  }
+
   post_install_vars = {
     quick_create_link         = local.quick_create_link
     name                      = local.name
@@ -42,7 +57,7 @@ resource "observe_filedrop" "aws_filedrop" {
   config {
     provider {
       aws {
-        region   = "us-west-2"
+        region   = lookup(local.cluster_region_map, var.observe_cluster, "us-west-2")
         role_arn = local.aws_role_arn
       }
     }
