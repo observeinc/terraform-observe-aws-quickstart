@@ -1,3 +1,18 @@
+# [0.4.0](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.3.2...v0.4.0) (2024-11-14)
+
+
+### Bug Fixes
+
+* OB-38940 make region of filedrop depend on cluster region ([5b83d40](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/5b83d405db6524b30298f85837a978f42b6c94a0))
+
+
+### Features
+
+* add a region suffix to the collection name ([62e79d1](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/62e79d1016ee7c33b1f957b4d2e4a37a5e06c77e))
+* enable filedrop by default ([1793d0f](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/1793d0fa4afacd95931ab8dc805f1c9851552d09))
+
+
+
 ## [0.3.2](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.3.1...v0.3.2) (2024-10-17)
 
 
