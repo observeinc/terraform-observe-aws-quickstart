@@ -1,3 +1,12 @@
+## [0.4.1](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.4.0...v0.4.1) (2024-11-14)
+
+
+### Reverts
+
+* "fix: add variable for observe cluster region for s3forwarder" ([2d36cae](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/2d36cae49967d9cc3c91937b058eb2d17ae0b7cc))
+
+
+
 # [0.4.0](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.3.2...v0.4.0) (2024-11-14)
 
 
