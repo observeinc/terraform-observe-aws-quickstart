@@ -1,3 +1,12 @@
+## [0.4.2](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.4.1...v0.4.2) (2024-11-14)
+
+
+### Bug Fixes
+
+* add map and variable for cluster ([97431f5](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/97431f54809c99078337d190c0c5271f3f5c5eff))
+
+
+
 ## [0.4.1](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.4.0...v0.4.1) (2024-11-14)
 
 
