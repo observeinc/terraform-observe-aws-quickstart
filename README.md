@@ -42,6 +42,7 @@ No modules.
 | Name | Type |
 |------|------|
 | observe_dashboard.home | resource |
+| observe_dataset.ec2 | resource |
 | observe_dataset.logs | resource |
 | observe_dataset.metrics | resource |
 | observe_dataset.resources | resource |
@@ -57,6 +58,7 @@ No modules.
 | <a name="input_max_expiry_duration"></a> [max\_expiry\_duration](#input\_max\_expiry\_duration) | Maximum expiry time for resources. | `string` | `"4h"` | no |
 | <a name="input_max_time_diff_duration"></a> [max\_time\_diff\_duration](#input\_max\_time\_diff\_duration) | Maximum time difference for processing time window. | `string` | `"4h"` | no |
 | <a name="input_name_format"></a> [name\_format](#input\_name\_format) | Format string to use for dataset names. Override to introduce a prefix or<br>suffix. | `string` | `"AWS-Quickstart/%s"` | no |
+| <a name="input_virtual_datasets"></a> [virtual\_datasets](#input\_virtual\_datasets) | Enable virtual datasets for resources | `bool` | `false` | no |
 | <a name="input_workspace"></a> [workspace](#input\_workspace) | Workspace to apply module to. | `object({ oid = string, id = string })` | n/a | yes |
 
 ## Outputs

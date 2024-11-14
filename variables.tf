@@ -37,3 +37,9 @@ variable "max_time_diff_duration" {
   description = "Maximum time difference for processing time window."
   default     = "4h"
 }
+
+variable "virtual_datasets" {
+  type        = bool
+  description = "Enable virtual datasets for resources"
+  default     = false
+}
