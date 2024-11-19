@@ -104,8 +104,15 @@ resource "observe_dataset" "resources" {
         make_col ID:case(
           Service="RDS" and ServiceSubType="DBInstance", split_part(ARN, ":db:", 2),
           Service="RDS" and ServiceSubType="DBCluster", split_part(ARN, ":cluster:", 2),
+          Service="ApiGateway" and ServiceSubType="RestApi", string(Configuration.name),
           Service="AutoScaling" and ServiceSubType="AutoScalingGroup", split_part(ARN, "autoScalingGroupName/", 2),
           true, ID)
+        
+        // ApiGateway ID is not useful for names
+        make_col Name:case(
+          Service="ApiGateway" and ServiceSubType="RestApi", concat_strings("restapis/", string(Configuration.name)),
+          true, Name
+        )
         
         make_resource options(expiry:${var.max_expiry_duration}),
           Tags,

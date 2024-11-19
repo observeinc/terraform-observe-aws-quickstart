@@ -102,8 +102,7 @@ resource "observe_dataset" "metrics" {
           namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiId") and path_exists(dimensions, "Stage"), concat_strings("arn:aws:apigateway:", region, "::/apis/", string(dimensions["ApiId"]), "/stages/", string(dimensions["Stage"])), 
           namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiId"), concat_strings("arn:aws:apigateway:", region, "::/apis/", string(dimensions["ApiId"])),
           //ApiGateway V1
-          namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiName") and path_exists(dimensions, "Stage"), concat_strings("arn:aws:apigateway:", region, "::/restapis/", string(dimensions["ApiName"]), "/stages/", string(dimensions["Stage"])),
-          namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiId"), concat_strings("arn:aws:apigateway:", region, "::/restapis/", string(dimensions["ApiName"])),
+          namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiName"), string(dimensions["ApiName"]),
           //ECS ContainerInsights
           namespace="ECS/ContainerInsights", string(coalesce(dimensions["TaskDefinitionFamily"], dimensions["ServiceName"], dimensions["ClusterName"])),
           namespace="AWS/PrivateLinkEndpoints" and path_exists(dimensions, "VPC Id"), string(dimensions["VPC Id"]),
