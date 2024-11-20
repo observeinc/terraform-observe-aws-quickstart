@@ -41,7 +41,11 @@ No modules.
 
 | Name | Type |
 |------|------|
+| observe_dashboard.ec2_instances | resource |
 | observe_dashboard.home | resource |
+| observe_dashboard.lambda_instances | resource |
+| observe_dashboard.rds_instances | resource |
+| observe_dashboard.sqs_services | resource |
 | observe_dataset.logs | resource |
 | observe_dataset.metrics | resource |
 | observe_dataset.resources | resource |
