@@ -1,3 +1,12 @@
+# [0.5.0](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.4.2...v0.5.0) (2024-11-22)
+
+
+### Features
+
+* add quickstart instance dashboards ([c284913](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/c28491357110dad93cd7b1dc78574162a8621b18))
+
+
+
 ## [0.4.2](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.4.1...v0.4.2) (2024-11-14)
 
 
