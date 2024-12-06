@@ -12,13 +12,6 @@ variable "aws_region" {
     EOF
 }
 
-variable "observe_cluster" {
-  type        = string
-  description = <<-EOF
-      The cluster where Observe is installed.
-    EOF
-}
-
 variable "source_bucket_names" {
   type        = list(string)
   description = <<-EOF
