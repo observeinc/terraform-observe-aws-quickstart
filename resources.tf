@@ -82,9 +82,46 @@ resource "observe_dataset" "resources" {
   }
 
   stage {
+    alias    = "from_aws_change"
+    input    = "datastream"
+    pipeline = <<-EOF
+        filter (OBSERVATION_KIND="http" or OBSERVATION_KIND="filedrop") and string(EXTRA["content-type"]) = "application/x-aws-change"
+        // for now keep same logic as s3 records
+        // we should avoid using filename for reference timestamp
+        extract_regex string(EXTRA["key"]),
+          /AWSLogs\/(o-[a-z0-9]{10,32}\/)?\d+\//
+          /Config\/[^\/]+\/\d{4}\/\d+\/\d+\/(?P<recordType>[^\/]+)\//
+          /(.*)?(?P<fileCreationTime>\d{8}T\d{6}Z)[^\/]*/
+
+        filter not is_null(recordType)
+        make_col fileCreationTime:parse_timestamp(fileCreationTime, "YYYYMMDDTHH24MISSZ")
+        set_valid_from options(max_time_diff:30m), fileCreationTime
+
+        make_col
+          timestamp:fileCreationTime,
+          ARN:string(FIELDS.configurationItem.ARN),
+          Configuration:object(FIELDS.configurationItem.configuration),
+          Service:split_part(string(FIELDS.configurationItem.resourceType), "::", 2),
+          ServiceSubType:split_part(string(FIELDS.configurationItem.resourceType), "::", 3),
+          Tags:object(coalesce(FIELDS.tags, FIELDS.configurationItem.supplementaryConfiguration.Tags))
+
+        filter Service!="Config" and ServiceSubType!="ResourceCompliance"
+
+        extract_regex ARN, /^arn:(?P<Partition>[^:]*):(?P<ServiceIgnore>[^:]*):(?P<Region>[^:]*):(?P<AccountID>[^:]*):(?P<Resource>.*)$/
+        make_col
+          AccountID:if(AccountID="" or is_null(AccountID), string(FIELDS.configurationItem.awsAccountId), AccountID),
+          Region:if(Region="" or is_null(Region), string(FIELDS.configurationItem.awsRegion), Region)
+        make_col Name:coalesce(get_regex(ARN, /arn:(aws|aws-us-gov|aws-cn):.*?:(\d{12}):(.*)$/, 3), Resource)
+        make_col ID:coalesce(string(FIELDS.configurationItem.resourceId), string(Configuration.Id), string(Configuration.id))
+
+    EOF
+  }
+
+  stage {
     input    = "from_config_snapshot"
     pipeline = <<-EOF
         union @from_sns_change_notification
+        union @from_aws_change
 
         make_col
           Name:coalesce(if(starts_with(Name, "/"), substring(Name, 1), Name), ID),
