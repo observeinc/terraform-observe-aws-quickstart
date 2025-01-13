@@ -1,4 +1,5 @@
 resource "observe_dashboard" "rds_instances" {
+  description = "RDS Instances Dashboard"
   layout = jsonencode(
     {
       autoPack = true

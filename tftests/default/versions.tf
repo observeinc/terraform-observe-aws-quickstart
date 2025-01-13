@@ -5,7 +5,7 @@ terraform {
       version = ">= 3"
     }
     observe = {
-      source  = "terraform.observeinc.com/observeinc/observe"
+      source  = "observeinc/observe"
       version = "~> 0.13"
     }
   }

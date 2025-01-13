@@ -1,5 +1,6 @@
 # terraform import observe_dashboard.ec2_instances 41051012
 resource "observe_dashboard" "ec2_instances" {
+  description = "EC2 Instances Dashboard"
   layout = jsonencode(
     {
       autoPack = true
