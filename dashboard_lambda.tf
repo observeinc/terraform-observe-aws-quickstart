@@ -1,4 +1,5 @@
 resource "observe_dashboard" "lambda_instances" {
+  description = "Lambda Instances Dashboard"
   layout = jsonencode(
     {
       autoPack = true
