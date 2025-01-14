@@ -1,3 +1,12 @@
+## [0.6.1](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.6.0...v0.6.1) (2025-01-14)
+
+
+### Bug Fixes
+
+* increase max_time_diff to 4h for AWS Config ([51579db](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/51579db067fda0e498218609c7d768868d369871))
+
+
+
 # [0.6.0](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.5.0...v0.6.0) (2024-12-17)
 
 
