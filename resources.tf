@@ -24,7 +24,7 @@ resource "observe_dataset" "resources" {
 
         filter not is_null(recordType)
         make_col fileCreationTime:parse_timestamp(fileCreationTime, "YYYYMMDDTHH24MISSZ")
-        set_valid_from options(max_time_diff:30m), fileCreationTime
+        set_valid_from options(max_time_diff:4h), fileCreationTime
 
         make_col
           timestamp:fileCreationTime,
@@ -95,7 +95,7 @@ resource "observe_dataset" "resources" {
 
         filter not is_null(recordType)
         make_col fileCreationTime:parse_timestamp(fileCreationTime, "YYYYMMDDTHH24MISSZ")
-        set_valid_from options(max_time_diff:30m), fileCreationTime
+        set_valid_from options(max_time_diff:4h), fileCreationTime
 
         make_col
           timestamp:fileCreationTime,
