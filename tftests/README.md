@@ -66,7 +66,7 @@ A common test example is a `default` test in which you might define the bare min
     terraform {
       required_providers {
         observe = {
-          source  = "terraform.observeinc.com/observeinc/observe"
+          source  = "observeinc/observe"
           version = ">= 0.4.15"
         }
         random = {

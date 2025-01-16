@@ -6,18 +6,13 @@ variable "workspace" {
 
 variable "name_format" {
   type        = string
-  description = <<-EOF
-    Format string to use for dataset names. Override to introduce a prefix or
-    suffix.
-  EOF
+  description = "Format string to use for dataset names. Override to introduce a prefix or suffix."
   default     = "AWS-Quickstart/%s"
 }
 
 variable "datastream" {
   type        = object({ dataset = string })
-  description = <<-EOF
-    The datastream used to derive resources from.
-  EOF
+  description = "The datastream used to derive resources from."
 }
 
 variable "freshness_default_duration" {

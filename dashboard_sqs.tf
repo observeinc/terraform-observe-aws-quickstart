@@ -1,5 +1,6 @@
 # terraform import observe_dashboard.sqs_services 41054051
 resource "observe_dashboard" "sqs_services" {
+  description = "SQS Instances Dashboard"
   layout = jsonencode(
     {
       autoPack = true
