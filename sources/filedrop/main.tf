@@ -10,20 +10,6 @@ locals {
     uri = "https://${nonsensitive(observe_datastream_token.this[0].secret)}@${trim(data.observe_ingest_info.this[0].collect_url, "https://")}/v1/http"
   }
 
-  # the frontend gets the keys, which are the cluster names from 
-  # ops/kubernetes/clusters/{CLUSTER_NAME}/vars/shared-domain.env
-  cluster_region_map = {
-    eng         = "us-west-2"
-    o2          = "us-west-2"
-    prod        = "us-west-2"
-    sandbox     = "us-west-2"
-    staging     = "us-west-2"
-    prod-cap1-2 = "us-west-2"
-    prod-ap-1   = "ap-northeast-1"
-    prod-cap1   = "us-east-1"
-    prod-eu-1   = "eu-central-1"
-    prod-cba-1  = "ap-southeast-2"
-  }
 
   post_install_vars = {
     quick_create_link              = local.quick_create_link
@@ -56,6 +42,8 @@ locals {
   ) : trimspace(line)])
 }
 
+data "observe_cloud_info" "this" {}
+
 resource "observe_filedrop" "aws_filedrop" {
   count      = local.enable_filedrop ? 1 : 0
   workspace  = var.workspace.oid
@@ -66,7 +54,7 @@ resource "observe_filedrop" "aws_filedrop" {
   config {
     provider {
       aws {
-        region   = lookup(local.cluster_region_map, var.observe_cluster, "us-west-2")
+        region   = data.observe_cloud_info.this.region
         role_arn = local.aws_role_arn
       }
     }
