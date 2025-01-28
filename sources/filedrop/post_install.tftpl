@@ -45,8 +45,12 @@ module "observe" {
 %{ endif ~}
   }
 
+#  You may configure the forwarder if needed
+#   forwarder = {
+
   ## Grant forwarder access to read from pre-existing S3 buckets
-  # source_bucket_names = ["*"]
+  # source_bucket_names = ["bucket-1","bucket-2"]
+# }
 
 %{ if !enable_config }  /*%{ endif ~}
   # enable AWS Config collection
