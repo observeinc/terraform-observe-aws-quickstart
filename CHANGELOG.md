@@ -1,3 +1,12 @@
+## [0.6.2](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.6.1...v0.6.2) (2025-02-21)
+
+
+### Bug Fixes
+
+* add delimiter to bucket names and replace region map with cloud info ([248d511](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/248d5114f2159316f5b4beb84f754290d869a68d))
+
+
+
 ## [0.6.1](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.6.0...v0.6.1) (2025-01-14)
 
 
