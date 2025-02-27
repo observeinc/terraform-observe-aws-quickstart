@@ -1,3 +1,12 @@
+## [0.6.3](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.6.2...v0.6.3) (2025-02-27)
+
+
+### Bug Fixes
+
+* **metrics:** include namespace column in schema ([b864c1e](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/b864c1e00e7ddb7f5690807952e3829d1c20a956))
+
+
+
 ## [0.6.2](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.6.1...v0.6.2) (2025-02-21)
 
 
