@@ -159,6 +159,7 @@ resource "observe_dataset" "metrics" {
           timestamp,
           account_id,
           region,
+          namespace,
           service,
           resourceId,
           metric,
@@ -168,6 +169,8 @@ resource "observe_dataset" "metrics" {
           dimensions
 
         interface "metric", metric:metric, value:value, metricType:metricType, metricUnit:unit
+
+        set_col_visible namespace:false
     EOF
   }
 }
