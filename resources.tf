@@ -1,9 +1,10 @@
 resource "observe_dataset" "resources" {
-  workspace   = local.workspace
-  name        = format(var.name_format, "AWS Asset Inventory")
-  icon_url    = "user-interface/toolbars/right-navigation-toolbar"
-  freshness   = var.freshness_default_duration
-  description = "AWS Asset Inventory"
+  workspace              = local.workspace
+  name                   = format(var.name_format, "AWS Asset Inventory")
+  icon_url               = "user-interface/toolbars/right-navigation-toolbar"
+  freshness              = var.freshness_default_duration
+  description            = "AWS Asset Inventory"
+  rematerialization_mode = local.rematerialization_mode
 
   inputs = {
     "datastream" = local.datastream

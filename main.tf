@@ -12,6 +12,7 @@ locals {
   metrics   = observe_dataset.metrics.id
 
   #Instance dashboard locals are referred by this name 
-  aws_asset_inventory = observe_dataset.resources.id
+  aws_asset_inventory    = observe_dataset.resources.id
+  rematerialization_mode = var.skip_rematerialization ? "skip_rematerialization" : "rematerialize"
 }
 

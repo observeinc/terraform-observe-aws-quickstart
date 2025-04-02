@@ -1,9 +1,10 @@
 resource "observe_dataset" "metrics" {
-  workspace   = local.workspace
-  name        = format(var.name_format, "Metrics")
-  icon_url    = "data/charts/increase-profits"
-  freshness   = var.freshness_default_duration
-  description = "AWS Asset Inventory"
+  workspace              = local.workspace
+  name                   = format(var.name_format, "Metrics")
+  icon_url               = "data/charts/increase-profits"
+  freshness              = var.freshness_default_duration
+  description            = "AWS Asset Inventory"
+  rematerialization_mode = local.rematerialization_mode
 
   inputs = {
     "datastream" = local.datastream

@@ -32,3 +32,9 @@ variable "max_time_diff_duration" {
   description = "Maximum time difference for processing time window."
   default     = "4h"
 }
+
+variable "skip_rematerialization" {
+  type        = bool
+  description = "Determines if datasets should rematerialize on non-schema changes. Note that schema changes will still result in rematerialization."
+  default     = true
+}

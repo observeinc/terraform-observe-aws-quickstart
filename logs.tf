@@ -1,9 +1,10 @@
 resource "observe_dataset" "logs" {
-  workspace   = local.workspace
-  name        = format(var.name_format, "Logs")
-  icon_url    = "programming/coding/event-log"
-  freshness   = var.freshness_default_duration
-  description = "Logs Dataset"
+  workspace              = local.workspace
+  name                   = format(var.name_format, "Logs")
+  icon_url               = "programming/coding/event-log"
+  freshness              = var.freshness_default_duration
+  description            = "Logs Dataset"
+  rematerialization_mode = local.rematerialization_mode
 
   inputs = {
     "datastream" = local.datastream
