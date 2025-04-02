@@ -1,3 +1,17 @@
+# [0.7.0](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.6.3...v0.7.0) (2025-04-02)
+
+
+### Bug Fixes
+
+* **metrics:** specify correct units for percent ([ff65f9f](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/ff65f9fb87068801cbc96b1154150a132d361f95))
+
+
+### Features
+
+* skip rematerialization by default and make it toggleable ([191d66a](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/191d66a624a795737f749820896dde507089be89))
+
+
+
 ## [0.6.3](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.6.2...v0.6.3) (2025-02-27)
 
 
