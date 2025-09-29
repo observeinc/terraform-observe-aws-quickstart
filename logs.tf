@@ -81,3 +81,84 @@ resource "observe_link" "logs" {
   fields    = ["accountId:AccountID", "region:Region", "service:Service", "resourceId:ID"]
   label     = "Resource"
 }
+
+resource "observe_dataset" "cloudtrail_events" {
+  workspace              = local.workspace
+  name                   = format(var.name_format, "CloudTrail Events")
+  icon_url               = "programming/coding/event-log"
+  freshness              = var.freshness_default_duration
+  description            = "CloudTrail Events Dataset"
+  rematerialization_mode = local.rematerialization_mode
+
+  inputs = {
+    "datastream" = local.datastream
+  }
+
+  stage {
+    input    = "datastream"
+    pipeline = <<-EOF
+      filter OBSERVATION_KIND = "filedrop"
+      filter EXTRA."content-type"= "application/x-aws-cloudtrail"
+
+      pick_col BUNDLE_TIMESTAMP,
+        records:FIELDS,
+        bucket:string(EXTRA.bucket),
+        key:string(EXTRA.key)
+
+      make_col eventTime:parse_isotime(string(records.eventTime))
+      set_valid_from options(max_time_diff:4h), eventTime
+      pick_col
+        eventTime,
+        eventID:string(records.eventID),
+        eventName:string(records.eventName),
+        eventSource:string(records.eventSource),
+        eventType:string(records.eventType),
+        eventVersion:string(records.eventVersion),
+        recipientAccountId:string(records.recipientAccountId),
+        awsRegion:string(records.awsRegion),
+        requestID:string(records.requestID),
+        responseElements:object(records.responseElements),
+        requestParameters:object(records.requestParameters),
+        sourceIPAddress:string(records.sourceIPAddress),
+        userAgent:string(records.userAgent),
+        userIdentity:records.userIdentity,
+        userArn:if(records.userIdentity.type = "IAMUser", string(records.userIdentity.arn), string_null()),
+        roleArn:if(records.userIdentity.type = "AssumedRole", string(records.userIdentity.sessionContext.sessionIssuer.arn), string_null()),
+        errorCode:string(records.errorCode),
+        errorMessage:string(records.errorMessage),
+        additionalEventData:object(records.additionalEventData),
+        resources:array(records.resources),
+        records
+
+      dedup eventID
+      set_col_visible resources:false, records:false
+      interface "log", "log":records
+    EOF
+  }
+}
+
+resource "observe_dataset" "s3_records" {
+  workspace              = local.workspace
+  name                   = format(var.name_format, "S3 Records")
+  icon_url               = "programming/coding/event-log"
+  freshness              = var.freshness_default_duration
+  description            = "S3 Records Dataset"
+  rematerialization_mode = local.rematerialization_mode
+
+  inputs = {
+    "datastream" = local.datastream
+  }
+
+  stage {
+    input    = "datastream"
+    pipeline = <<-EOF
+      filter OBSERVATION_KIND = "filedrop"
+      filter ((string(EXTRA['content-type']) = "text/plain"))
+      pick_col timestamp:BUNDLE_TIMESTAMP,
+        text:string(FIELDS.text),
+        bucket:string(EXTRA.bucket),
+        key:string(EXTRA.key)
+      interface "log", "log":text
+    EOF
+  }
+}

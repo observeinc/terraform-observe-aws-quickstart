@@ -19,7 +19,7 @@ module "google_quickstart" {
 ```
 
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -46,9 +46,11 @@ No modules.
 | [observe_dashboard.lambda_instances](https://registry.terraform.io/providers/observeinc/observe/latest/docs/resources/dashboard) | resource |
 | [observe_dashboard.rds_instances](https://registry.terraform.io/providers/observeinc/observe/latest/docs/resources/dashboard) | resource |
 | [observe_dashboard.sqs_services](https://registry.terraform.io/providers/observeinc/observe/latest/docs/resources/dashboard) | resource |
+| [observe_dataset.cloudtrail_events](https://registry.terraform.io/providers/observeinc/observe/latest/docs/resources/dataset) | resource |
 | [observe_dataset.logs](https://registry.terraform.io/providers/observeinc/observe/latest/docs/resources/dataset) | resource |
 | [observe_dataset.metrics](https://registry.terraform.io/providers/observeinc/observe/latest/docs/resources/dataset) | resource |
 | [observe_dataset.resources](https://registry.terraform.io/providers/observeinc/observe/latest/docs/resources/dataset) | resource |
+| [observe_dataset.s3_records](https://registry.terraform.io/providers/observeinc/observe/latest/docs/resources/dataset) | resource |
 | [observe_link.logs](https://registry.terraform.io/providers/observeinc/observe/latest/docs/resources/link) | resource |
 | [observe_link.metrics](https://registry.terraform.io/providers/observeinc/observe/latest/docs/resources/link) | resource |
 
@@ -67,7 +69,7 @@ No modules.
 ## Outputs
 
 No outputs.
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
 
 ## License
 
