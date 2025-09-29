@@ -24,18 +24,20 @@ resource "observe_dataset" "resources" {
           /(.*)?(?P<fileCreationTime>\d{8}T\d{6}Z)[^\/]*/
 
         filter not is_null(recordType)
-        make_col fileCreationTime:parse_timestamp(fileCreationTime, "YYYYMMDDTHH24MISSZ")
-        set_valid_from options(max_time_diff:4h), fileCreationTime
+        make_col fileCreationTime:coalesce(parse_isotime(string(FIELDS.configurationItemCaptureTime)), parse_timestamp(fileCreationTime, "YYYYMMDDTHH24MISSZ"))
+        set_valid_from options(max_time_diff:${var.max_time_diff_duration}), fileCreationTime
 
-        make_col
+        pick_col
           timestamp:fileCreationTime,
           ARN:string(FIELDS.ARN),
           Configuration:object(FIELDS.configuration),
           Service:split_part(string(FIELDS.resourceType), "::", 2),
           ServiceSubType:split_part(string(FIELDS.resourceType), "::", 3),
-          Tags:object(coalesce(FIELDS.tags, FIELDS.supplementaryConfiguration.Tags))
+          Tags:object(coalesce(FIELDS.tags, FIELDS.supplementaryConfiguration.Tags)),
+          FIELDS
 
         filter Service!="Config" and ServiceSubType!="ResourceCompliance"
+        filter Service!="SSM" and ServiceSubType !="AssociationCompliance"
 
         extract_regex ARN, /^arn:(?P<Partition>[^:]*):(?P<ServiceIgnore>[^:]*):(?P<Region>[^:]*):(?P<AccountID>[^:]*):(?P<Resource>.*)$/
         make_col
@@ -43,6 +45,7 @@ resource "observe_dataset" "resources" {
           Region:if(Region="" or is_null(Region), string(FIELDS.awsRegion), Region)
         make_col Name:coalesce(get_regex(ARN, /arn:(aws|aws-us-gov|aws-cn):.*?:(\d{12}):(.*)$/, 3), Resource)
         make_col ID:coalesce(string(FIELDS.resourceId), string(Configuration.Id), string(Configuration.id))
+        make_col ttl:case(FIELDS.configurationItemStatus = "ResourceDeleted", 1ns)
     EOF
   }
 
@@ -56,7 +59,7 @@ resource "observe_dataset" "resources" {
         filter body.Subject ~ "AWS Config"
         make_col detail:parse_json(body.Message)
 
-        make_col notificationCreationTime:parse_isotime(string(detail.notificationCreationTime))
+        make_col notificationCreationTime:coalesce(parse_isotime(string(FIELDS.configurationItemCaptureTime)),parse_isotime(string(detail.notificationCreationTime)))
         set_valid_from options(max_time_diff:${var.max_time_diff_duration}), notificationCreationTime
 
         filter not is_null(detail.configurationItem)
@@ -79,6 +82,7 @@ resource "observe_dataset" "resources" {
           Region:if(Region="" or is_null(Region), string(FIELDS.awsRegion), Region)
         make_col Name:coalesce(get_regex(ARN, /arn:(aws|aws-us-gov|aws-cn):.*?:(\d{12}):(.*)$/, 3), Resource)
         make_col ID:coalesce(string(FIELDS.resourceId), string(Configuration.Id), string(Configuration.id))
+        make_col ttl:case(FIELDS.configurationItemStatus = "ResourceDeleted", 1ns)
     EOF
   }
 
@@ -95,16 +99,17 @@ resource "observe_dataset" "resources" {
           /(.*)?(?P<fileCreationTime>\d{8}T\d{6}Z)[^\/]*/
 
         filter not is_null(recordType)
-        make_col fileCreationTime:parse_timestamp(fileCreationTime, "YYYYMMDDTHH24MISSZ")
-        set_valid_from options(max_time_diff:4h), fileCreationTime
+        make_col fileCreationTime:coalesce(parse_isotime(string(FIELDS.configurationItemCaptureTime)), parse_timestamp(fileCreationTime, "YYYYMMDDTHH24MISSZ"))
+        set_valid_from options(max_time_diff:${var.max_time_diff_duration}), fileCreationTime
 
-        make_col
+        pick_col
           timestamp:fileCreationTime,
           ARN:string(FIELDS.configurationItem.ARN),
           Configuration:object(FIELDS.configurationItem.configuration),
           Service:split_part(string(FIELDS.configurationItem.resourceType), "::", 2),
           ServiceSubType:split_part(string(FIELDS.configurationItem.resourceType), "::", 3),
-          Tags:object(coalesce(FIELDS.tags, FIELDS.configurationItem.supplementaryConfiguration.Tags))
+          Tags:object(coalesce(FIELDS.configurationItem.tags, FIELDS.configurationItem.supplementaryConfiguration.Tags, FIELDS.tags)),
+          FIELDS
 
         filter Service!="Config" and ServiceSubType!="ResourceCompliance"
 
@@ -151,7 +156,8 @@ resource "observe_dataset" "resources" {
           Name,
           ServiceSubType,
           ARN,
-          primary_key(AccountID, Region, Service, ID)
+          primary_key(AccountID, Region, Service, ID),
+          valid_for(ttl)
 
         pick_col
           @."Valid From",
