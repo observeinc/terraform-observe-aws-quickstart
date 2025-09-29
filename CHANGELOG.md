@@ -1,3 +1,18 @@
+# [0.8.0](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.7.0...v0.8.0) (2025-09-29)
+
+
+### Bug Fixes
+
+* update a documentation link for terraform ([f269aac](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/f269aac8c5747e42972c39ecf3cc7807cb90e78a))
+* Update networkELB to include AWS namespace - OBSSD-1396 ([876d77c](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/876d77ce3d402061e819f6de855c34951317f39c))
+
+
+### Features
+
+* S3 Records, CloudTrail Events, TTL ([c98f9c9](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/c98f9c9a4f79b12738783fbf765aee34c7c11f8f))
+
+
+
 # [0.7.0](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.6.3...v0.7.0) (2025-04-02)
 
 
