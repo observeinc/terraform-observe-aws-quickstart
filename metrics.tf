@@ -67,7 +67,7 @@ resource "observe_dataset" "metrics" {
           value:float64(_c_ob_value),
           unit:if(_c_ob_path="count", string_null(), unit),
           service:case(
-            namespace="NetworkELB", "ElasticLoadBalancingV2",
+            namespace="AWS/NetworkELB", "ElasticLoadBalancingV2",
             namespace="AWS/EBS", "EC2",
             namespace="AWS/Firehose", "KinesisFirehose",
             namespace="AWS/ApplicationELB", "ElasticLoadBalancingV2",
@@ -116,7 +116,7 @@ resource "observe_dataset" "metrics" {
           namespace="AWS/CloudWatch/MetricStreams" and path_exists(dimensions, "MetricStreamName"), string(dimensions["MetricStreamName"]),
           namespace="AWS/DynamoDB" and path_exists(dimensions, "TableName"), string(dimensions["TableName"]),
           service="SageMaker" and path_exists(dimensions, "EndpointName"), string(dimensions["EndpointName"]),
-          namespace="NetworkELB" and path_exists(dimensions, "LoadBalancer"), concat_strings("arn:aws:elasticloadbalancing:", region, ":", account_id, ":loadbalancer/", string(dimensions["LoadBalancer"])),
+          namespace="AWS/NetworkELB" and path_exists(dimensions, "LoadBalancer"), concat_strings("arn:aws:elasticloadbalancing:", region, ":", account_id, ":loadbalancer/", string(dimensions["LoadBalancer"])),
           true, resourceId
         )
 
