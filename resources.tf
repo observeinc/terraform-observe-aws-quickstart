@@ -148,6 +148,7 @@ resource "observe_dataset" "resources" {
           Service="RDS" and ServiceSubType="DBInstance", split_part(ARN, ":db:", 2),
           Service="RDS" and ServiceSubType="DBCluster", split_part(ARN, ":cluster:", 2),
           Service="AutoScaling" and ServiceSubType="AutoScalingGroup", split_part(ARN, "autoScalingGroupName/", 2),
+          Service="GlobalAccelerator", concat_strings("accelerator/", split_part(ARN, "accelerator/", 2)),
           true, ID)
         
         make_resource options(expiry:${var.max_expiry_duration}),
