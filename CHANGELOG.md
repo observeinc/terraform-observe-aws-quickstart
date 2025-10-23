@@ -1,3 +1,12 @@
+## [0.8.1](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.0...v0.8.1) (2025-10-23)
+
+
+### Bug Fixes
+
+* metric links for cloudfront, globalaccelerator, autoscaling ([0a69db8](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/0a69db860bebe1e2e0b2db56253792561cb462de))
+
+
+
 # [0.8.0](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.7.0...v0.8.0) (2025-09-29)
 
 
