@@ -91,7 +91,7 @@ resource "observe_dataset" "metrics" {
           // ALB ID is an ARN, and we need to exclude TargetGroup links to match AWS Config
           namespace="AWS/ApplicationELB" and path_exists(dimensions, "LoadBalancer"), concat_strings("arn:aws:elasticloadbalancing:", region, ":", account_id, ":loadbalancer/", string(dimensions["LoadBalancer"])),
           namespace="AWS/Events" and path_exists(dimensions, "RuleName"), string(dimensions["RuleName"]),
-          namespace="AWS/EC2" and path_exists(dimensions, "AutoScalingGroupName"), dimensions["AutoScalingGroupName"],
+          namespace="AWS/EC2" or namespace="AWS/AutoScaling" and path_exists(dimensions, "AutoScalingGroupName"), string(dimensions["AutoScalingGroupName"]),
           namespace="AWS/EC2CapacityReservations", string(dimensions["CapacityReservationId"]),
           namespace="AWS/NatGateway", dimensions["NatGatewayId"],
           namespace="AWS/Cloudwatch" and path_exists(dimensions, "MetricStreamName"), string(dimensions["MetricStreamName"]),
@@ -117,10 +117,17 @@ resource "observe_dataset" "metrics" {
           namespace="AWS/DynamoDB" and path_exists(dimensions, "TableName"), string(dimensions["TableName"]),
           service="SageMaker" and path_exists(dimensions, "EndpointName"), string(dimensions["EndpointName"]),
           namespace="AWS/NetworkELB" and path_exists(dimensions, "LoadBalancer"), concat_strings("arn:aws:elasticloadbalancing:", region, ":", account_id, ":loadbalancer/", string(dimensions["LoadBalancer"])),
+          // GlobalAccelerator
+          service="GlobalAccelerator" and path_exists(dimensions, "Accelerator") and path_exists(dimensions, "Listener"),
+            concat_strings(
+              "accelerator/", string(dimensions["Accelerator"]),
+              "/listener/", string(dimensions["Listener"])),
+          service="GlobalAccelerator" and path_exists(dimensions, "Accelerator"), concat_strings("accelerator/", string(dimensions["Accelerator"])),
           true, resourceId
         )
 
         make_col account_id:case(service="ApiGatewayV2", "", true, account_id)
+        make_col region:case(service="CloudFront", "global", true, region)
 
         make_col
           // https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html
