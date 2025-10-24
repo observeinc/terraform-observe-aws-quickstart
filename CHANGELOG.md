@@ -1,3 +1,12 @@
+## [0.8.2](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.1...v0.8.2) (2025-10-24)
+
+
+### Bug Fixes
+
+* **resources:** prefer delivery or notification timestamps from Config ([e8dd524](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/e8dd52496f34cb5bfdddae24eb2e8f074e719577))
+
+
+
 ## [0.8.1](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.0...v0.8.1) (2025-10-23)
 
 
