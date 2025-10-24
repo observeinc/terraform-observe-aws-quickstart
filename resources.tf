@@ -24,7 +24,7 @@ resource "observe_dataset" "resources" {
           /(.*)?(?P<fileCreationTime>\d{8}T\d{6}Z)[^\/]*/
 
         filter not is_null(recordType)
-        make_col fileCreationTime:coalesce(parse_isotime(string(FIELDS.configurationItemCaptureTime)), parse_timestamp(fileCreationTime, "YYYYMMDDTHH24MISSZ"))
+        make_col fileCreationTime:parse_timestamp(fileCreationTime, "YYYYMMDDTHH24MISSZ")
         set_valid_from options(max_time_diff:${var.max_time_diff_duration}), fileCreationTime
 
         pick_col
@@ -59,7 +59,7 @@ resource "observe_dataset" "resources" {
         filter body.Subject ~ "AWS Config"
         make_col detail:parse_json(body.Message)
 
-        make_col notificationCreationTime:coalesce(parse_isotime(string(FIELDS.configurationItemCaptureTime)),parse_isotime(string(detail.notificationCreationTime)))
+        make_col notificationCreationTime:parse_isotime(string(detail.notificationCreationTime))
         set_valid_from options(max_time_diff:${var.max_time_diff_duration}), notificationCreationTime
 
         filter not is_null(detail.configurationItem)
@@ -99,7 +99,7 @@ resource "observe_dataset" "resources" {
           /(.*)?(?P<fileCreationTime>\d{8}T\d{6}Z)[^\/]*/
 
         filter not is_null(recordType)
-        make_col fileCreationTime:coalesce(parse_isotime(string(FIELDS.configurationItemCaptureTime)), parse_timestamp(fileCreationTime, "YYYYMMDDTHH24MISSZ"))
+        make_col fileCreationTime:parse_timestamp(fileCreationTime, "YYYYMMDDTHH24MISSZ")
         set_valid_from options(max_time_diff:${var.max_time_diff_duration}), fileCreationTime
 
         pick_col
