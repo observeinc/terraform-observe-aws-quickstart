@@ -91,14 +91,19 @@ resource "observe_dataset" "metrics" {
           // ALB ID is an ARN, and we need to exclude TargetGroup links to match AWS Config
           namespace="AWS/ApplicationELB" and path_exists(dimensions, "LoadBalancer"), concat_strings("arn:aws:elasticloadbalancing:", region, ":", account_id, ":loadbalancer/", string(dimensions["LoadBalancer"])),
           namespace="AWS/Events" and path_exists(dimensions, "RuleName"), string(dimensions["RuleName"]),
+          namespace="AWS/EC2" and path_exists(dimensions, "VolumeId"), string(dimensions["VolumeId"]),
+          namespace="AWS/EC2" and path_exists(dimensions, "InstanceId"), string(dimensions["InstanceId"]),
           namespace="AWS/EC2" or namespace="AWS/AutoScaling" and path_exists(dimensions, "AutoScalingGroupName"), string(dimensions["AutoScalingGroupName"]),
           namespace="AWS/EC2CapacityReservations", string(dimensions["CapacityReservationId"]),
+          namespace="AWS/EKS" and path_exists(dimensions, "ClusterName"), string(dimensions["ClusterName"]),
           namespace="AWS/NatGateway", dimensions["NatGatewayId"],
           namespace="AWS/Cloudwatch" and path_exists(dimensions, "MetricStreamName"), string(dimensions["MetricStreamName"]),
           namespace="AWS/ECS", coalesce(dimensions["ServiceName"], dimensions["DiscoveryName"], dimensions["ClusterName"]),
           namespace="AWS/Kinesis", string(dimensions["StreamName"]),
           namespace="AWS/Firehose", string(dimensions["DeliveryStreamName"]),
           namespace="AWS/Lambda", string(dimensions["FunctionName"]),
+          namespace="AWS/KMS" and path_exists(dimensions, "KeyArn"), split_part(string(dimensions["KeyArn"]), "/key", 2),
+          namespace="AWS/SNS" and path_exists(dimensions, "TopicName"), concat_strings("arn:aws:sns:", region, ":", account_id, ":", string(dimensions["TopicName"])),
           //ApiGateway V2
           namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiId") and path_exists(dimensions, "Stage"), concat_strings("arn:aws:apigateway:", region, "::/apis/", string(dimensions["ApiId"]), "/stages/", string(dimensions["Stage"])), 
           namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiId"), concat_strings("arn:aws:apigateway:", region, "::/apis/", string(dimensions["ApiId"])),
@@ -123,6 +128,7 @@ resource "observe_dataset" "metrics" {
               "accelerator/", string(dimensions["Accelerator"]),
               "/listener/", string(dimensions["Listener"])),
           service="GlobalAccelerator" and path_exists(dimensions, "Accelerator"), concat_strings("accelerator/", string(dimensions["Accelerator"])),
+          namespace="AWS/Backup" and path_exists(dimensions, "BackupVaultName"), string(dimensions["BackupVaultName"]),
           true, resourceId
         )
 
