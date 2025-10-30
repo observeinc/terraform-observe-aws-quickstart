@@ -1,3 +1,13 @@
+## [0.8.3](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.2...v0.8.3) (2025-10-30)
+
+
+### Bug Fixes
+
+* **metrics:** improve resource links for EC2, EKS, KMS, SNS, Backup ([a917b4b](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/a917b4b1a145cdc23444092f2e77c2e86cb11056))
+* **resources:** improved handling of ConfigHistory events ([6588d22](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/6588d22c6a4d65e0247656cfbac14c969ad2ff5e))
+
+
+
 ## [0.8.2](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.1...v0.8.2) (2025-10-24)
 
 
