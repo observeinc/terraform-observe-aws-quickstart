@@ -49,32 +49,8 @@ resource "observe_dataset" "resources" {
         filter (Service!="Config" and ServiceSubType != "ResourceCompliance") and (Service!="SSM" and ServiceSubType != "AssociationCompliance")
     EOF
   }
-
-  stage {
-    alias    = "from_config_history"
-    pipeline = <<-EOF
-        filter recordType = "ConfigHistory"
-        rename_col timestamp:configurationStateId
-        // https://aws.amazon.com/blogs/mt/configuration-history-configuration-snapshot-files-aws-config/
-        // ConfigHistory files are delivered every 6h depending on changes
-        set_valid_from options(max_time_diff:7h), timestamp
-
-        pick_col
-          timestamp,
-          awsAccountId,
-          awsRegion,
-          Service,
-          ServiceSubType,
-          ID,
-          ARN,
-          Configuration,
-          Tags
-    EOF
-  }
-
   stage {
     alias    = "from_config_snapshot_and_oversized_change_notification"
-    input    = "from_config_deliveries"
     pipeline = <<-EOF
         filter recordType = "ConfigSnapshot" or recordType = "OversizedChangeNotification"
         rename_col timestamp:fileCreationTime
@@ -83,6 +59,7 @@ resource "observe_dataset" "resources" {
         // OversizedChangeNotification events are delivered when a resource changes but the payload exceeds SNS limit (256KB)
         set_valid_from options(max_time_diff:${var.max_time_diff_duration}), timestamp
 
+        #hint{breakTransformPipelineAfterVerb:""}
         pick_col
           timestamp,
           awsAccountId,
@@ -129,14 +106,17 @@ resource "observe_dataset" "resources" {
         filter Service!="Config" and not contains(ServiceSubType, "Compliance") and ((is_null(Configuration.messageType) or Configuration.messageType = parse_json("null") or (string(Configuration.messageType) != "ComplianceChangeNotification")))
 
         set_valid_from options(max_time_diff:${var.max_time_diff_duration}), timestamp
+        #hint{breakTransformPipelineAfterVerb:""}
         drop_col BUNDLE_TIMESTAMP
     EOF
   }
 
   stage {
-    input    = "from_config_history"
+    input    = "from_config_snapshot_and_oversized_change_notification"
     pipeline = <<-EOF
-        union @from_config_snapshot_and_oversized_change_notification, @from_sns_change_notification
+        #debug{tempoRewritesByName: "rewritejsonstringcolumn"}
+
+        union @from_sns_change_notification
 
         // Just in case ARN could be a more accurate source of identifying fields
         extract_regex ARN, /^arn:(?P<Partition>[^:]*):(?P<ServiceIgnore>[^:]*):(?P<Region>[^:]*):(?P<AccountID>[^:]*):(?P<Resource>.*)$/
