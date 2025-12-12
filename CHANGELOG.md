@@ -1,3 +1,12 @@
+## [0.8.4](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.3...v0.8.4) (2025-12-12)
+
+
+### Bug Fixes
+
+* **resources:** Improved resource OPAL - OBSSD-1937 ([44a7058](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/44a7058ea8f03fb47f0260fc145437bc30a5f54f))
+
+
+
 ## [0.8.3](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.2...v0.8.3) (2025-10-30)
 
 
