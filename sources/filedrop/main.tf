@@ -3,7 +3,7 @@ locals {
 
   enable_filedrop = var.enable_filedrop
 
-  aws_role_arn = local.enable_filedrop ? "arn:aws:iam::${var.aws_account_id}:role/${local.name}" : ""
+  aws_role_arn = local.enable_filedrop ? "arn:aws:iam::${var.aws_account_id}:role/${local.name}-filedrop" : ""
   template_url = "https://observeinc-${var.aws_region}.s3.amazonaws.com/aws-sam-apps/${var.release_version}/stack.yaml"
 
   destination = local.enable_filedrop ? observe_filedrop.aws_filedrop[0].endpoint[0].s3[0] : {

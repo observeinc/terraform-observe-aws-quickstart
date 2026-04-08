@@ -5,9 +5,9 @@ terraform {
       version = ">= 3"
     }
     observe = {
-      source  = "terraform.observeinc.com/observeinc/observe"
-      version = "~> 0.13"
+      source  = "observeinc/observe"
+      version = "~> 0.14"
     }
   }
-  required_version = ">= 1.0"
+  required_version = ">= 1.1.0"
 }
