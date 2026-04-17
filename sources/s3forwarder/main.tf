@@ -1,7 +1,7 @@
 locals {
   name = replace(var.name, "{region}", var.aws_region)
 
-  aws_role_arn     = "arn:aws:iam::${var.aws_account_id}:role/${local.name}"
+  aws_role_arn     = "arn:aws:iam::${var.aws_account_id}:role/${local.name}-filedrop"
   template_url     = "https://observeinc-${var.aws_region}.s3.amazonaws.com/aws-sam-apps/${var.release_version}/forwarder.yaml"
   destination      = observe_filedrop.aws_filedrop.endpoint[0].s3[0]
   access_point_arn = observe_filedrop.aws_filedrop.endpoint[0].s3[0].arn
