@@ -77,6 +77,7 @@ resource "observe_dataset" "metrics" {
             namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiId"), "ApiGatewayV2",
             namespace="AWS/ApiGateway" and path_exists(dimensions, "ApiName"), "ApiGateway",
             namespace="AWS/PrivateLinkEndpoints" and (path_exists(dimensions, "VPC Id") or path_exists(dimensions, "Subnet Id")), "EC2",
+            namespace="AWS/Kafka", "MSK",
             starts_with(namespace, "AWS/"), split_part(namespace, "/", 2),
             starts_with(namespace, "ECS/ContainerInsights"), "ECS",
             starts_with(namespace, "ContainerInsights/"), "EKS",
@@ -129,6 +130,30 @@ resource "observe_dataset" "metrics" {
               "/listener/", string(dimensions["Listener"])),
           service="GlobalAccelerator" and path_exists(dimensions, "Accelerator"), concat_strings("accelerator/", string(dimensions["Accelerator"])),
           namespace="AWS/Backup" and path_exists(dimensions, "BackupVaultName"), string(dimensions["BackupVaultName"]),
+
+          // AWS RDS / Aurora (add after the ALB branch, for example)
+          namespace="AWS/RDS" and path_exists(dimensions, "DBClusterIdentifier"), string(dimensions["DBClusterIdentifier"]),
+          namespace="AWS/RDS" and path_exists(dimensions, "DBInstanceIdentifier"), string(dimensions["DBInstanceIdentifier"]),
+          namespace="AWS/DocDB" and path_exists(dimensions, "DBClusterIdentifier"), string(dimensions["DBClusterIdentifier"]),
+          namespace="AWS/DocDB" and path_exists(dimensions, "DBInstanceIdentifier"), string(dimensions["DBInstanceIdentifier"]),
+
+          // AWS OpenSearch / Elasticsearch
+          namespace="AWS/ES" and path_exists(dimensions, "DomainName"), string(dimensions["DomainName"]),
+          // Amazon MSK (Kafka) - cluster-level identifier is preferred
+          namespace="AWS/Kafka" and path_exists(dimensions, "Cluster Name"), string(dimensions["Cluster Name"]),
+          namespace="AWS/Kafka" and path_exists(dimensions, "Cluster ARN"), split_part(string(dimensions["Cluster ARN"]), "cluster/", 2),
+          // AWS Bedrock
+          namespace="AWS/Bedrock" and path_exists(dimensions, "ProvisionedModelId"), string(dimensions["ProvisionedModelId"]),
+          namespace="AWS/Bedrock" and path_exists(dimensions, "CustomModelName"), string(dimensions["CustomModelName"]),
+          namespace="AWS/Bedrock" and path_exists(dimensions, "ModelId"), string(dimensions["ModelId"]),
+          namespace="AWS/Bedrock/Agents" and path_exists(dimensions, "AgentAliasArn"), string(dimensions["AgentAliasArn"]),
+          namespace="AWS/Bedrock/Guardrails" and path_exists(dimensions, "GuardrailArn"), string(dimensions["GuardrailArn"]),
+          
+          // Optional: fallback to broker-level if no cluster dimension (rare but seen in some broker-specific metrics)
+          namespace="AWS/Kafka", coalesce(
+            dimensions["Cluster Name"],
+            dimensions["Broker ID"]
+          ),
           true, resourceId
         )
 
