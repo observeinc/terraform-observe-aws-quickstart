@@ -1,3 +1,13 @@
+## [0.8.5](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.4...v0.8.5) (2026-04-20)
+
+
+### Bug Fixes
+
+* add -filedrop suffix to the default filedrop AWS role name to match the SAM app default ([d85b2b8](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/d85b2b8942463c7009999ed083186c7412c080b6))
+* **metrics:** improve resourceId mappings for Bedrock, MSK, ES, RDS, and DocDB metrics ([28a56e4](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/28a56e4f0f801f62049d63d959c764480b3b95a9))
+
+
+
 ## [0.8.4](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.3...v0.8.4) (2025-12-12)
 
 
