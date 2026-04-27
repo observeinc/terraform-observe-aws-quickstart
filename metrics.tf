@@ -27,6 +27,7 @@ resource "observe_dataset" "metrics" {
         namespace:string(FIELDS.Namespace),
         metric_name:string(FIELDS.MetricName),
         dimensions:pivot_array(array(FIELDS.Dimensions), "Name", "Value"),
+        resource_tags:pivot_array(array(FIELDS.ResourceTags), "Name", "Value"),
         ob:make_object(
           count:float64(FIELDS.Value.Count),
           max:float64(FIELDS.Value.Max),
@@ -51,6 +52,7 @@ resource "observe_dataset" "metrics" {
           namespace:string(data.namespace),
           metric_name:string(data.metric_name),
           dimensions:object(data.dimensions),
+          resource_tags:object(data.resource_tags),
           unit:string(data.unit),
           ob:make_object(
             count:float64(data.value.count),
@@ -205,6 +207,7 @@ resource "observe_dataset" "metrics" {
           metricType,
           value,
           unit,
+          resource_tags,
           dimensions
 
         interface "metric", metric:metric, value:value, metricType:metricType, metricUnit:unit
