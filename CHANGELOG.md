@@ -1,3 +1,12 @@
+## [0.8.6](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.5...v0.8.6) (2026-06-24)
+
+
+### Bug Fixes
+
+* add resource_tags column to metrics, propagate from the input poller and metrics stream data ([#45](https://github.com/observeinc/terraform-observe-aws-quickstart/issues/45)) ([96c7e95](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/96c7e957c058363f4d61925063628e6b4204a7bf))
+
+
+
 ## [0.8.5](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.4...v0.8.5) (2026-04-20)
 
 
