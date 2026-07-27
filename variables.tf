@@ -24,7 +24,7 @@ variable "freshness_default_duration" {
 variable "max_expiry_duration" {
   type        = string
   description = "Maximum expiry time for resources."
-  default     = "4h"
+  default     = "25h"
 }
 
 variable "max_time_diff_duration" {
