@@ -60,7 +60,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_datastream"></a> [datastream](#input\_datastream) | The datastream used to derive resources from. | `object({ dataset = string })` | n/a | yes |
 | <a name="input_freshness_default_duration"></a> [freshness\_default\_duration](#input\_freshness\_default\_duration) | Dataset freshness | `string` | `"1m"` | no |
-| <a name="input_max_expiry_duration"></a> [max\_expiry\_duration](#input\_max\_expiry\_duration) | Maximum expiry time for resources. | `string` | `"4h"` | no |
+| <a name="input_max_expiry_duration"></a> [max\_expiry\_duration](#input\_max\_expiry\_duration) | Maximum expiry time for resources. | `string` | `"25h"` | no |
 | <a name="input_max_time_diff_duration"></a> [max\_time\_diff\_duration](#input\_max\_time\_diff\_duration) | Maximum time difference for processing time window. | `string` | `"4h"` | no |
 | <a name="input_name_format"></a> [name\_format](#input\_name\_format) | Format string to use for dataset names. Override to introduce a prefix or suffix. | `string` | `"AWS-Quickstart/%s"` | no |
 | <a name="input_skip_rematerialization"></a> [skip\_rematerialization](#input\_skip\_rematerialization) | Determines if datasets should rematerialize on non-schema changes. Note that schema changes will still result in rematerialization. | `bool` | `true` | no |
