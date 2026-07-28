@@ -1,3 +1,12 @@
+## [0.8.7](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.6...v0.8.7) (2026-07-28)
+
+
+### Bug Fixes
+
+* increase default max_expiry_duration for AWS Quickstart resources to 25h ([9b45fbd](https://github.com/observeinc/terraform-observe-aws-quickstart/commit/9b45fbddb69e568507820b7bdca48792bd065986))
+
+
+
 ## [0.8.6](https://github.com/observeinc/terraform-observe-aws-quickstart/compare/v0.8.5...v0.8.6) (2026-06-24)
 
 
