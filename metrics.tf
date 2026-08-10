@@ -104,7 +104,10 @@ resource "observe_dataset" "metrics" {
           namespace="AWS/ECS", coalesce(dimensions["ServiceName"], dimensions["DiscoveryName"], dimensions["ClusterName"]),
           namespace="AWS/Kinesis", string(dimensions["StreamName"]),
           namespace="AWS/Firehose", string(dimensions["DeliveryStreamName"]),
-          namespace="AWS/Lambda", string(dimensions["FunctionName"]),
+          namespace="AWS/Lambda",
+            coalesce(
+              get_regex(string(dimensions["FunctionName"]), /^(af|ap|ca|eu|il|me|sa|us|cn|us-gov)-[a-z]+-\d+\.([^.]+)$/, 2),
+              string(dimensions["FunctionName"])),
           namespace="AWS/KMS" and path_exists(dimensions, "KeyArn"), split_part(string(dimensions["KeyArn"]), "/key", 2),
           namespace="AWS/SNS" and path_exists(dimensions, "TopicName"), concat_strings("arn:aws:sns:", region, ":", account_id, ":", string(dimensions["TopicName"])),
           //ApiGateway V2
